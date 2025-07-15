@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PeakFlow</title>
+</head>
+<body>
+    <!-- Header for PeakFlow -->
+    <header class="header">
+        <nav id="navbar">
+            <h1>PeakFlow</h1>
+            <ul>
+                <li>Notification</li>
+                <li>Settings</li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+        <!-- Task Creation Section -->
+        <section class="task-form">
+            <form id="taskForm">
+                <input type="text" id="taskInput" placeholder="Enter your task here..." required>
+                <button type="submit">Add Task</button>
+            </form>
+        </section>
+
+        <!-- General Task List -->
+        <section class="task-list">
+            <h2>Tasks</h2>
+            <ul id="tasks">
+                <!-- Tasks will be dynamically added here -->
+            </ul>
+        </section>
+
+        <!-- Task Filter Section -->
+        <section class="tasks">
+            <label for="filter">Filter Tasks:</label>
+            <select id="filter">
+                <option value="all">All</option>
+                <option value="completed">Completed</option>
+                <option value="pending">Pending</option>
+            </select>
+        </section>
+
+        <!-- Kanban Board -->
+        <section id="kanban-board">
+            <!-- Column for High Priority -->
+            <div class="kanban-column">
+                <h3>High</h3>
+                <div class="task-list">
+                    <!-- Task cards for High priority -->
+                </div>
+            </div>
+
+            <!-- Column for Medium Priority -->
+            <div class="kanban-column">
+                <h3>Medium</h3>
+                <div class="task-list">
+                    <!-- Task cards for Medium priority -->
+                </div>
+            </div>
+
+            <!-- Column for Low Priority -->
+            <div class="kanban-column">
+                <h3>Low</h3>
+                <div class="task-list">
+                    <!-- Task cards for Low priority -->
+                </div>
+            </div>
+        </section>
+    </main>
+</body>
+</html>
