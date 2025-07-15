@@ -53,7 +53,7 @@
         <input type="datetime-local" id="taskDeadline" name="taskDeadline" required>
 
         <!-- Submit Button -->
-        <button id="btn" type="submit">Add Task</button>
+        <button id="addBtn" type="submit">Add Task</button>
     </form>
 </section>
 
@@ -69,9 +69,9 @@
     <div class="filter-group">
         <label for="filter">Filter Tasks:</label>
         <select id="filter">
-            <option value="all">All</option>
-            <option value="completed">Completed</option>
-            <option value="pending">Pending</option>
+            <option id="allTasks" value="all">All</option>
+            <option id="completedTasks" value="completed">Completed</option>
+            <option id="pendingTasks" value="pending">Pending</option>
         </select>
     </div>
 </section>
