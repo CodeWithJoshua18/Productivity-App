@@ -161,6 +161,12 @@ header {
     gap: 0.5rem;
 }
 
+.completed {
+    text-decoration: line-through;
+    color: gray;
+}
+
+
 /* Footer */
 footer {
     background-color: #f7f9fc;
