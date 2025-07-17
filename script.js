@@ -70,3 +70,42 @@ document.getElementById('addTask').addEventListener('click', function(event) {
     // Clear the form
     document.getElementById('taskForm').reset();
 });
+
+// function to handle task actions
+document.getElementById('tasks').addEventListener('click', function(event){
+    // delete task
+    if (event.target.classList.contains('deleteTask')) {
+        const taskItem = event.target.closest('li');
+        if (taskItem) {
+            taskItem.remove();
+            alert('Task deleted successfully.');
+        }
+    }
+    // edit task
+    else if (event.target.classList.contains('editTask')) {
+        const taskItem = event.target.closest('li');
+        if (taskItem) {
+            const taskTitle = taskItem.querySelector('h3').innerText;
+            const taskDescription = taskItem.querySelector('p').innerText;
+            const taskPriority = taskItem.querySelector('p:nth-child(3)').innerText.split(': ')[1];
+            const taskDeadline = taskItem.querySelector('p:nth-child(4)').innerText.split(': ')[1];
+
+            // Populate the form with existing values
+            document.getElementById('taskTitle').value = taskTitle;
+            document.getElementById('taskDescription').value = taskDescription;
+            document.getElementById('taskPriority').value = taskPriority;
+            document.getElementById('taskDeadline').value = taskDeadline;
+
+            // Remove the task from the list
+            taskItem.remove();
+        }
+    }
+    // complete task
+    else if (event.target.classList.contains('completeTask')) {
+        const taskItem = event.target.closest('li');
+        if (taskItem) {
+            taskItem.classList.add('completed'); // Add a class to style completed tasks
+            alert('Task marked as completed.');
+        }
+    }
+})
