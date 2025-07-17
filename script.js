@@ -5,12 +5,10 @@ document.getElementById('addBtn').addEventListener('click', function (event) {
     // Get form input values
     const title = document.getElementById('taskTitle').value.trim();
     const description = document.getElementById('taskDescription').value.trim();
-    const date = document.getElementById('taskDate').value;
-    const time = document.getElementById('taskTime').value;
     const deadline = document.getElementById('taskDeadline').value;
     const priority = document.getElementById('taskPriority').value;
 
-    if (title === '' || description === '' || date === '' || time === '' || deadline === '' || priority === '') {
+    if (title === '' || description === '' || deadline === '' || priority === '') {
         alert('Please fill in all fields.');
         return;
     }
@@ -23,8 +21,6 @@ document.getElementById('addBtn').addEventListener('click', function (event) {
     li.innerHTML = `
         <strong>${title}</strong><br>
         ${description}<br>
-        Date: ${date}<br>
-        Time: ${time}<br>
         Deadline: ${deadline}<br>
         Priority: ${priority}
         <br>
@@ -80,8 +76,6 @@ function saveTasks(){
     const newTask = {
         title: document.getElementById('taskTitle').value,
         description: document.getElementById('taskDescription').value,
-        date: document.getElementById('taskDate').value,
-        time: document.getElementById('taskTime').value,
         deadline: document.getElementById('taskDeadline').value,
         priority: document.getElementById('taskPriority').value
     };
@@ -104,8 +98,6 @@ function renderTask(task){
     li.innerHTML = `
         <strong>${task.title}</strong><br>
         ${task.description}<br>
-        Date: ${task.date}<br>
-        Time: ${task.time}<br>
         Deadline: ${task.deadline}<br>
         Priority: ${task.priority}
         <br>
