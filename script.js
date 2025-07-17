@@ -72,3 +72,62 @@ function addToKanban(taskElement) {
         targetColumn.appendChild(clone);
     }
 }
+
+// adding local storage functionality
+function saveTasks(){
+    let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+
+    const newTask = {
+        title: document.getElementById('taskTitle').value,
+        description: document.getElementById('taskDescription').value,
+        date: document.getElementById('taskDate').value,
+        time: document.getElementById('taskTime').value,
+        deadline: document.getElementById('taskDeadline').value,
+        priority: document.getElementById('taskPriority').value
+    };
+    tasks.push(newTask);
+    localStorage.setItem('tasks', JSON.stringify(tasks));
+
+    // render tasks immediately
+    renderTask(newTask);
+
+    // reset form
+    document.getElementById('taskForm').reset();
+}
+
+// Function to render a task in the task list
+function renderTask(task){
+    const li = document.createElement('li');
+    li.classList.add('task-item');
+    li.setAttribute('data-priority', task.priority);
+
+    li.innerHTML = `
+        <strong>${task.title}</strong><br>
+        ${task.description}<br>
+        Date: ${task.date}<br>
+        Time: ${task.time}<br>
+        Deadline: ${task.deadline}<br>
+        Priority: ${task.priority}
+        <br>
+        <button class="complete-btn">Mark as Completed</button>
+    `;
+
+    // Add complete button logic
+    li.querySelector('.complete-btn').addEventListener('click', function () {
+        li.classList.toggle('completed');
+        this.textContent = li.classList.contains('completed') ? 'Completed' : 'Mark as Completed';
+    });
+
+    // Append to the master list
+    document.getElementById('tasks').appendChild(li);
+
+    addToKanban(li);
+}
+
+// Load tasks from local storage on page load
+function loadTasks(){
+    const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+    tasks.forEach(task => {
+        renderTask(task);
+    });
+}
