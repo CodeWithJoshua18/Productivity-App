@@ -31,14 +31,6 @@
         <label for="taskDescription">Description:</label>
         <textarea id="taskDescription" name="taskDescription" rows="4" placeholder="Describe the task..." required></textarea>
 
-        <!-- Date -->
-        <label for="taskDate">Date:</label>
-        <input type="date" id="taskDate" name="taskDate" required>
-
-        <!-- Time -->
-        <label for="taskTime">Time:</label>
-        <input type="time" id="taskTime" name="taskTime" required>
-
         <!-- Priority -->
         <label for="taskPriority">Priority:</label>
         <select id="taskPriority" name="taskPriority" required>
@@ -53,7 +45,7 @@
         <input type="datetime-local" id="taskDeadline" name="taskDeadline" required>
 
         <!-- Submit Button -->
-        <button id="addBtn" type="submit">Add Task</button>
+        <button onclick="addTask()" id="addBtn" type="submit">Add Task</button>
     </form>
 </section>
 
