@@ -1,4 +1,3 @@
-// Add tasks functionality
 document.getElementById('addTask').addEventListener('click', function(event) {
     event.preventDefault(); // Prevent form submission
 
@@ -22,33 +21,52 @@ document.getElementById('addTask').addEventListener('click', function(event) {
         deadline: taskDeadline
     };
 
-    // get the <ul> where tasks will be displayed
+    // Optional: Add to the general <ul id="tasks"> list
     const taskList = document.getElementById('tasks');
-
-    // Create a new list item for the task
     const listItem = document.createElement('li');
-
-    // Set the content of the list item
     listItem.innerHTML = `
-        <div class = "task">
-        <h3>${newTask.name}</h3>
-        <p>${newTask.description}</p>
-        <p><strong>Priority:</strong> ${newTask.priority}</p>
-        <p><strong>Deadline:</strong> ${newTask.deadline}</p>
-        <button class="editTask">Edit</button>
-        <button class="completeTask">Complete</button>
-        <button class="deleteTask">Delete</button>
+        <div class="task">
+            <h3>${newTask.name}</h3>
+            <p>${newTask.description}</p>
+            <p><strong>Priority:</strong> ${newTask.priority}</p>
+            <p><strong>Deadline:</strong> ${newTask.deadline}</p>
+            <button class="editTask">Edit</button>
+            <button class="completeTask">Complete</button>
+            <button class="deleteTask">Delete</button>
         </div>
     `;
-
-    // Append the new list item to the task list
     taskList.appendChild(listItem);
-    
 
+    // 🔥 Append to the correct Kanban column based on priority
+    const kanbanCard = document.createElement('div');
+    kanbanCard.className = 'task-card'; // You can style this in your CSS
+    kanbanCard.innerHTML = `
+        <h4>${newTask.name}</h4>
+        <p>${newTask.description}</p>
+        <p><strong>Deadline:</strong> ${newTask.deadline}</p>
+    `;
 
-    // Here you would typically send the newTask to your server or add it to a list
-    alert('New Task Added:', newTask);
+    let kanbanColumnId = '';
+    switch (newTask.priority.toLowerCase()) {
+        case 'high':
+            kanbanColumnId = 'high-tasks';
+            break;
+        case 'medium':
+            kanbanColumnId = 'medium-tasks';
+            break;
+        case 'low':
+            kanbanColumnId = 'low-tasks';
+            break;
+        default:
+            alert('Unknown priority level.');
+            return;
+    }
 
-    // Clear the form fields after adding the task
+    document.getElementById(kanbanColumnId).appendChild(kanbanCard);
+
+    // Notify user
+    alert(`New Task Added to ${newTask.priority} priority column!`);
+
+    // Clear the form
     document.getElementById('taskForm').reset();
 });
