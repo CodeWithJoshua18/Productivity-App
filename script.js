@@ -1,35 +1,25 @@
-document.getElementById('addTask').addEventListener('click', function(event) {
-    event.preventDefault(); // Prevent form submission
+// Helper: Get tasks from localStorage
+function getStoredTasks() {
+    return JSON.parse(localStorage.getItem('tasks')) || [];
+}
 
-    // Get task details
-    const taskTitle = document.getElementById('taskTitle').value;
-    const taskDescription = document.getElementById('taskDescription').value;
-    const taskPriority = document.getElementById('taskPriority').value;
-    const taskDeadline = document.getElementById('taskDeadline').value;
+// Helper: Save tasks to localStorage
+function saveTasks(tasks) {
+    localStorage.setItem('tasks', JSON.stringify(tasks));
+}
 
-    // Validate inputs
-    if (!taskTitle || !taskPriority || !taskDescription || !taskDeadline) {
-        alert('Please fill in all fields.');
-        return;
-    }
-
-    // Create a new task object
-    const newTask = {
-        name: taskTitle,
-        description: taskDescription,
-        priority: taskPriority,
-        deadline: taskDeadline
-    };
-
-    // Optional: Add to the general <ul id="tasks"> list
+// Render a single task
+function renderTask(task) {
+    // General task list
     const taskList = document.getElementById('tasks');
     const listItem = document.createElement('li');
+    listItem.setAttribute('data-id', task.id);
     listItem.innerHTML = `
         <div class="task">
-            <h3>${newTask.name}</h3>
-            <p>${newTask.description}</p>
-            <p><strong>Priority:</strong> ${newTask.priority}</p>
-            <p><strong>Deadline:</strong> ${newTask.deadline}</p>
+            <h3>${task.name}</h3>
+            <p>${task.description}</p>
+            <p><strong>Priority:</strong> ${task.priority}</p>
+            <p><strong>Deadline:</strong> ${task.deadline}</p>
             <button class="editTask">Edit</button>
             <button class="completeTask">Complete</button>
             <button class="deleteTask">Delete</button>
@@ -37,17 +27,18 @@ document.getElementById('addTask').addEventListener('click', function(event) {
     `;
     taskList.appendChild(listItem);
 
-    // 🔥 Append to the correct Kanban column based on priority
+    // Kanban
     const kanbanCard = document.createElement('div');
-    kanbanCard.className = 'task-card'; // You can style this in your CSS
+    kanbanCard.className = 'task-card';
+    kanbanCard.setAttribute('data-id', task.id);
     kanbanCard.innerHTML = `
-        <h4>${newTask.name}</h4>
-        <p>${newTask.description}</p>
-        <p><strong>Deadline:</strong> ${newTask.deadline}</p>
+        <h4>${task.name}</h4>
+        <p>${task.description}</p>
+        <p><strong>Deadline:</strong> ${task.deadline}</p>
     `;
 
     let kanbanColumnId = '';
-    switch (newTask.priority.toLowerCase()) {
+    switch (task.priority.toLowerCase()) {
         case 'high':
             kanbanColumnId = 'high-tasks';
             break;
@@ -57,55 +48,93 @@ document.getElementById('addTask').addEventListener('click', function(event) {
         case 'low':
             kanbanColumnId = 'low-tasks';
             break;
-        default:
-            alert('Unknown priority level.');
-            return;
     }
 
     document.getElementById(kanbanColumnId).appendChild(kanbanCard);
+}
 
-    // Notify user
+document.addEventListener('DOMContentLoaded', () => {
+    // Load and display saved tasks
+    const storedTasks = getStoredTasks();
+    storedTasks.forEach(renderTask);
+});
+
+// Add new task
+document.getElementById('addTask').addEventListener('click', function (event) {
+    event.preventDefault();
+
+    const taskTitle = document.getElementById('taskTitle').value;
+    const taskDescription = document.getElementById('taskDescription').value;
+    const taskPriority = document.getElementById('taskPriority').value;
+    const taskDeadline = document.getElementById('taskDeadline').value;
+
+    if (!taskTitle || !taskPriority || !taskDescription || !taskDeadline) {
+        alert('Please fill in all fields.');
+        return;
+    }
+
+    const taskId = 'task-' + Date.now();
+
+    const newTask = {
+        id: taskId,
+        name: taskTitle,
+        description: taskDescription,
+        priority: taskPriority,
+        deadline: taskDeadline
+    };
+
+    // Save task
+    const tasks = getStoredTasks();
+    tasks.push(newTask);
+    saveTasks(tasks);
+
+    renderTask(newTask);
     alert(`New Task Added to ${newTask.priority} priority column!`);
-
-    // Clear the form
     document.getElementById('taskForm').reset();
 });
 
-// function to handle task actions
-document.getElementById('tasks').addEventListener('click', function(event){
-    // delete task
+document.getElementById('tasks').addEventListener('click', function (event) {
+    const taskItem = event.target.closest('li');
+    if (!taskItem) return;
+    const taskId = taskItem.getAttribute('data-id');
+
+    let tasks = getStoredTasks();
+
+    // Delete tasks
     if (event.target.classList.contains('deleteTask')) {
-        const taskItem = event.target.closest('li');
-        if (taskItem) {
-            taskItem.remove();
-            alert('Task deleted successfully.');
-        }
+        taskItem.remove();
+        const kanbanTask = document.querySelector(`#kanban-board [data-id="${taskId}"]`);
+        if (kanbanTask) kanbanTask.remove();
+
+        tasks = tasks.filter(t => t.id !== taskId);
+        saveTasks(tasks);
+        alert('Task deleted successfully.');
     }
-    // edit task
+
+    // Edittasks
     else if (event.target.classList.contains('editTask')) {
-        const taskItem = event.target.closest('li');
-        if (taskItem) {
-            const taskTitle = taskItem.querySelector('h3').innerText;
-            const taskDescription = taskItem.querySelector('p').innerText;
-            const taskPriority = taskItem.querySelector('p:nth-child(3)').innerText.split(': ')[1];
-            const taskDeadline = taskItem.querySelector('p:nth-child(4)').innerText.split(': ')[1];
+        const task = tasks.find(t => t.id === taskId);
+        if (!task) return;
 
-            // Populate the form with existing values
-            document.getElementById('taskTitle').value = taskTitle;
-            document.getElementById('taskDescription').value = taskDescription;
-            document.getElementById('taskPriority').value = taskPriority;
-            document.getElementById('taskDeadline').value = taskDeadline;
+        document.getElementById('taskTitle').value = task.name;
+        document.getElementById('taskDescription').value = task.description;
+        document.getElementById('taskPriority').value = task.priority;
+        document.getElementById('taskDeadline').value = task.deadline;
 
-            // Remove the task from the list
-            taskItem.remove();
-        }
+        // Remove from DOM and storage
+        taskItem.remove();
+        const kanbanTask = document.querySelector(`#kanban-board [data-id="${taskId}"]`);
+        if (kanbanTask) kanbanTask.remove();
+
+        tasks = tasks.filter(t => t.id !== taskId);
+        saveTasks(tasks);
     }
-    // complete task
+
+    // Mark as completed
     else if (event.target.classList.contains('completeTask')) {
-        const taskItem = event.target.closest('li');
-        if (taskItem) {
-            taskItem.classList.add('completed'); // Add a class to style completed tasks
-            alert('Task marked as completed.');
-        }
+        taskItem.classList.add('completed');
+        const kanbanTask = document.querySelector(`#kanban-board [data-id="${taskId}"]`);
+        if (kanbanTask) kanbanTask.classList.add('completed');
+        alert('Task marked as completed.');
     }
-})
+});
