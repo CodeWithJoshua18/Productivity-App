@@ -1,9 +1,9 @@
-// Helper: Get tasks from localStorage
+//  Get tasks from localStorage
 function getStoredTasks() {
     return JSON.parse(localStorage.getItem('tasks')) || [];
 }
 
-// Helper: Save tasks to localStorage
+//  Save tasks to localStorage
 function saveTasks(tasks) {
     localStorage.setItem('tasks', JSON.stringify(tasks));
 }
